@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>HTML MOCHA Test Report</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2/chai.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/4.0.0/sinon.js"></script>
+		<script>mocha.setup('bdd')</script>
+		<script src="../../client/scripts/main.js"></script>
+		<script type="text/javascript" src="test.js"></script>
+		<script>
+			onload = function(){
+				mocha.checkLeaks();
+				var runner = mocha.run();
+				runner.on('test end', function(test){
+					console.log(test.fullTitle());
+				});
+			};
+		</script>
+	</head>
+	<body>
+		<div id="mocha"></div>
+  </body>
+</html>
