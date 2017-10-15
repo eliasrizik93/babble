@@ -1,8 +1,6 @@
 ﻿/*jslint this, node: true */
 "use strict";
 
-var users = require("./users-util");
-
 var Messages = {
 
     //{name: String, email:String, message:String,timestamp:Number(ms)}
@@ -18,18 +16,17 @@ var Messages = {
 
     //messages.getMessages(counter:Number) : Array(messages)
     getMessages: function (counter) {
-        if (counter >= this.messageArray.length) {
+        if (this.messageArray.length == 0 || counter >= this.messageArray.length) {
             return [];
         }
         var messages = this.messageArray.slice(counter);
-        messages.forEach(function (msg) {msg.avatar = users.getUserById(msg.userId).avatar;});
         return messages;
     },
 
     // messages.deleteMessage(id:String) : void
     deleteMessage: function (id) {
         this.messageArray = this.messageArray.filter(function (msg) {
-            return msg.id === id;
+            return msg.id != id;
         });
     },
 

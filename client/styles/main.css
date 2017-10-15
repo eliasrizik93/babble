@@ -24,6 +24,11 @@ body{
     width: 166px;
     height: 70px;
     margin-left:13px;
+
+}
+.HeaderH{
+    display:none;
+    visibility: hidden;
 }
 /*                    nav                 */
 nav{
@@ -50,7 +55,7 @@ main{
     font-weight: 400;
     text-align: left;
 }
-#messagesListID{
+.messagesList{
     margin-left: 24px;
     margin-top:18px;
     overflow-y: scroll;
@@ -63,10 +68,10 @@ main{
     float:right;
     margin-right:42px;
 }
-#counterMsg{
+.counterMsg{
     margin:0px 8px 0px 0px;
 }
-#counterUser{
+.counterUser{
     margin:0px;
 }
 .main dd{
@@ -79,6 +84,7 @@ footer{
     height: 13.3%;
     background-color: #ffffff;
     display:inline-block;
+
 }
 .SendForm{
     width: 100%;
@@ -97,17 +103,31 @@ footer{
     line-height: 40px;
     text-align: left;
 }
-#textAreaChat{
+.textAreaChat{
     height:100%;
     border:none;
     resize: none;
     width:100%;
 }
+.textAreaChat:focus{
+    outline: none;
+}
 .Simg{
+    width: 14%;
+    height:100%;
+    display:flex;
     float:right;
-    margin:22px 45px 0px 0px;
-    width: 3.5%;
-    height: 6.4%;
+}
+.sendImg{
+    width:100%;
+    height:100%;
+    background:url(../images/send.png);
+    border:none;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.sendImg:focus{
+    outline: none;
 }
 /*                Scroll Bar              */
 .messagesList::-webkit-scrollbar{
@@ -143,11 +163,11 @@ footer{
     border:1px;
     width:25%;
     height:26%;
+    min-width:370px;
     top:34%;
     left:33%;
     z-index: 3;
     border-radius: 5px;
-    display: inline-block;
     position: fixed;
 }
 .modal-content h1{
@@ -209,7 +229,7 @@ footer{
    border-radius: 1px;
    height:100%;
 }
-#Name{
+.inputName{
     width:70%;
     float:right;
     margin-right:20px;
@@ -217,7 +237,7 @@ footer{
     border:1px solid #d8d8d8;
     height:100%;
 }
-#Email{
+.inputEmail{
     width:70%;
     float:right;
     border-radius: 5px;
@@ -233,9 +253,6 @@ footer{
     list-style-type: none;
     overflow-x: hidden;
 }
-.messagesList li{
-
-}
 
 .messagesList div{
     display: inline-block;
@@ -244,24 +261,38 @@ footer{
     border-width: 1px;
     border-color:  #d7d7d7;
     background-color:  #ffffff;
-    max-width: 52.8%;
+    max-width: 60%;
     padding-left:9px;
     padding-top: 9px;
     padding-bottom: 0px;
     padding-right:9px;
+    overflow-x: hidden;
     margin-bottom: 14px;
-    max-width: 676px;
     min-width: 32.7%;
     min-height: 7.4%;
-
+    word-wrap: break-word;
 }
 .messagesList div:hover{
+    border-color:  #d7d7d7;
+    background-color:  #ebedec;
+}
+.messagesList div:focus{
     border-color:  #d7d7d7;
     background-color:  #ebedec;
 }
 .messagesList div:hover .buttonDelete{
     visibility: visible;
     display:block;
+}
+.messagesList div:focus .buttonDelete{
+    visibility: visible;
+    display:block;
+}
+.messagesList div:focus{
+    outline: none;
+}
+.buttonDelete:focus{
+    outline: none;
 }
 .messagesList .Images{
     margin-right:9px;
@@ -296,7 +327,188 @@ cite{
 .buttonDelete {
     float:right;
     margin-top:5px;
+    cursor:pointer;
+    background:url(../images/DeleteButton.png);
+    border:none;
+    background-repeat: no-repeat;
+    height:15px;
     visibility: hidden;
     display:none;
-    cursor:pointer;
+}
+
+@media only screen and (min-width: 640px){
+    .messagesList li{
+        width:100%;
+    }
+}
+
+@media only screen and (min-width: 321px) and (max-width: 639px){
+    nav{
+        display:none;
+        visibility: hidden;
+    }
+    footer{
+        width:100%;
+    }
+    main{
+        width:100%;
+    }
+    .modal-content{
+        width: 88.7%;
+        height: 89.3%;
+        top:6.3%;
+        left:5.3%;
+        min-width: 0px;
+    }
+    .modal-content h1{
+        margin-bottom: 40px;
+        margin-top: 40px;
+        margin-left: 40px;
+
+    }
+    .modal-content p{
+        height:50px;
+    }
+    .NameLabel{
+        display:block;
+        margin-left:0;
+    }
+    .NameEmail{
+        margin-left: 40px;
+        height: 40px;
+    }
+    .inputName{
+        display:block;
+        height:20px;
+        float:left;
+        margin-top:10px;
+        border-radius: 10px;
+        margin-left:0;
+    }
+    .inputEmail{
+        display:block;
+        height:20px;
+        float:left;
+        margin-top:10px;
+        border-radius: 10px;
+        margin-left:0;
+    }
+    .buttonSign{
+        height:20px;
+        margin-top:300px;
+        margin-right:40px;
+    }
+    .btnSave{
+        width:60px;
+    }
+    .messagesList::-webkit-scrollbar{
+        display: none;
+        visibility: hidden;
+    }
+
+}
+
+@media only screen and (min-width: 0px) and (max-width: 320px){
+    nav{
+        display:none;
+        visibility: hidden;
+    }
+    footer{
+        width:100%;
+    }
+    .Simg{
+        width: 14%;
+        height:100%;
+        display:flex;
+        float:right;
+        min-width:51px;
+    }
+    main{
+        width:100%;
+    }
+    .modal-content{
+        width: 88.7%;
+        height: 89.3%;
+        top:6.3%;
+        left:5.3%;
+        min-width: 0px;
+    }
+    .modal-content h1{
+        margin-bottom: 40px;
+        margin-top: 40px;
+        margin-left:4%;
+    }
+    .modal-content p{
+        height:50px;
+        margin-left:4%;
+    }
+    .NameLabel{
+        display:block;
+        margin-left:0;
+
+    }
+    .NameEmail{
+        height: 82%;
+        margin-left:0;
+    }
+    .inputName{
+        display:block;
+        height:20px;
+        width:50%;
+        float:left;
+        margin-top:10px;
+        border-radius: 10px;
+    }
+    .inputEmail{
+        display:block;
+        height:20px;
+        width:50%;
+        float:left;
+        margin-top:10px;
+        border-radius: 10px;
+    }
+    .buttonSign{
+        height:60px;
+        margin-top:300px;
+        float:left;
+        display:block;
+        overflow: hidden;
+    }
+    .btnSave{
+        width:100%;
+        height:50%;
+        display: inline-block;
+        margin-left:0;
+        margin-bottom: 3px;
+        overflow: hidden;
+    }
+    .btnAnonymous{
+        height:50%;
+        overflow: hidden;
+        width:100%;
+        display: inline-block;
+        margin-bottom: 1px;
+    }
+    .messagesList::-webkit-scrollbar{
+        display: none;
+        visibility: hidden;
+    }
+    .main dl {
+        margin-right:8%;
+        margin-top:20px;
+        float:left;
+    }
+    .main h1 {
+        margin-left:8%;
+        margin-top: 0;
+        float:left;
+    }
+    .messagesList{
+       float:left;
+    }
+    .imgBabble{
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
 }

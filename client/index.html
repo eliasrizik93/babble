@@ -8,19 +8,20 @@
         <title>Vegans - Babble</title>
         <link rel="stylesheet" type="text/css" href="styles/main.css">
         <script async type="text/javascript" src="scripts/main.js"></script>
+        <link rel="shortcut icon" href="../favicon.ico">
     </head>
     <body>
             <div class="modal">
                     <div class="modal-content">
                         <h1>Who are you?</h1>
-                        <form class="NameEmail">
+                        <form class="NameEmail" action="#">
                             <p class="Name">
                                 <label for="Name" class="NameLabel">Full name:</label>
-                                <input id="Name" placeholder="Enter Your Name...">
+                                <input id="Name" class="inputName">
                             </p>
                             <p class="Email">
                                 <label for="Email" class="NameLabel">Email:</label>
-                                <input id="Email" placeholder="Enter Your Email...">
+                                <input  id="Email" class="inputEmail">
                             </p>
                             <div class="buttonSign">
                                 <button class="btnSave" value="save">Save</button>
@@ -30,20 +31,20 @@
                     </div>
                     <div class="grey-Background"></div>
                 </div>
-
         <header class="header">
-            <img alt="" src="images/babble-title.png" class= "imgBabble"/>
+            <h1 class="HeaderH">Babble Talk - freely</h1>
+            <img alt="logo" aria-label="Logo" src="images/logo.png" class= "imgBabble"/>
         </header>
         <nav></nav>
         <main class="main">
                 <h1>Vegans</h1>
                 <dl>
                     <dd>
-                        <img alt="" src="images/img1.png">
+                        <img alt="" src="images/msg.png">
                         <span id="counterMsg" class="counterMsg">0</span>
                     </dd>
                     <dd>
-                        <img alt="" src="images/img2.png">
+                        <img alt="" src="images/users.png">
                         <span id="counterUser" class="counterUser">0</span>
                     </dd>
                 </dl>
@@ -51,12 +52,12 @@
             </ol>
         </main>
         <footer>
-                <form class="SendForm">
+                <form class="SendForm" action="#">
                     <span class="textChat">
-                     <textarea id="textAreaChat" placeholder="Send Message..."></textarea>
+                     <textarea id="textAreaChat" class="textAreaChat" placeholder="Send Message..."></textarea>
                     </span>
                     <span class="Simg">
-                        <img src="images/send.png" id = "sendImage" class="sendImg">
+                        <button aria-label="Send" type="submit" id = "sendImage" class="sendImg"></button>
                     </span>
                 </form>
             </footer>

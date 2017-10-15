@@ -4,8 +4,9 @@
 var http = require("http");
 var url = require("url");
 
-var messages = require("./messages-util");
 var users = require("./users-util");
+var messages = require("./messages-util");
+
 
 var port = 9000;
 var server = http.createServer(function (req, res) {
@@ -47,13 +48,15 @@ var server = http.createServer(function (req, res) {
             var counter = requestUrl.query.counter;
             var newMessages = messages.getMessages(counter);
             if (newMessages && newMessages.length > 0) {
-                var payload = {messages: newMessages, count: messages.getMessageCount()};
-                res.writeHead(200, {"Content-Type": "application/json"});
+                var payload = { messages: newMessages };
+                payload.count = messages.getMessageCount();
+
+                res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify(payload));
                 return;
             }
 
-            users.addToMessageClients(req.headers["x-user-id"], res, counter);
+            users.addToMessageClients(res, counter);
             return;
 
         } else if (req.method === "POST") {
@@ -85,10 +88,12 @@ var server = http.createServer(function (req, res) {
                 }
 
                 message.userId = req.headers["x-user-id"];
+                message.avatar = users.getAvatar(req.headers["x-user-id"]);
                 var messageId = messages.addMessage(message);
                 users.updateAllMessageClients();
-                res.writeHead(200, {"Content-Type": "application/json"});
-                res.end(JSON.stringify({id: messageId}));
+                users.updateAllStatsClients();
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ id: messageId }));
                 return;
 
             });
@@ -109,8 +114,8 @@ var server = http.createServer(function (req, res) {
             return;
         }
 
-        var messageId = requestUrl.pathname.substring(10);
-        if (isNaN(messageId)) {
+        var messageId = requestUrl.pathname.substring(11);
+        if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(messageId) !== true) {
             res.writeHead(404);
             res.end("HTTP 404 Not found");
             return;
@@ -123,9 +128,10 @@ var server = http.createServer(function (req, res) {
         }
 
         messages.deleteMessage(messageId);
-        users.updateAllMessageClients();
-        res.writeHead(200);
-        res.end("HTTP 200 Success");
+        users.updateAllMessageClients(messageId);
+        users.updateAllStatsClients();
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ id: messageId }));
         return;
     }
 
@@ -143,15 +149,18 @@ var server = http.createServer(function (req, res) {
             return;
         }
 
-        //change to true if you want to use long polling for stats call
-        var longPolling = false;
+        var longPolling = requestUrl.query && requestUrl.query.longpolling;
 
         if (longPolling) {
-            users.addToStatsClients(req.headers["x-user-id"], res);
+            users.addToStatsClients(res);
             return;
         } else {
+            var payload = {};
+            payload.userCount = users.getConnectedUsers();
+            payload.messageCount = messages.getMessageCount();
+
             res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify({userCount: users.getConnectedUsers(), messageCount: messages.getMessageCount()}));
+            res.end(JSON.stringify(payload));
             return;
         }
     }
@@ -165,9 +174,11 @@ var server = http.createServer(function (req, res) {
         }
 
         //User already logged in ?
-        if (req.headers["x-user-id"] && users.isLoggedIn(req.headers["x-user-id"])) {
-            res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify({id: req.headers["x-user-id"]}));
+        var userId = req.headers["x-user-id"];
+        if (userId && users.isLoggedIn(userId)) {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            var userInfo = users.getUserById(userId);
+            res.end(JSON.stringify(userInfo));
             return;
         }
 
@@ -176,26 +187,26 @@ var server = http.createServer(function (req, res) {
             regPayload += data;
         });
         req.on("end", function () {
-            var message = {};
+            var userInfo = {};
             try {
-                message = JSON.parse(regPayload);
+                userInfo = JSON.parse(regPayload);
             } catch (e) {
                 res.writeHead(400);
                 res.end("HTTP 400 Bad Request");
                 return;
             }
 
-            var userId = users.login(message.name, message.email);
+            userInfo = users.login(userInfo.id,userInfo.name, userInfo.email);
             users.updateAllStatsClients();
             res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify({id: userId}));
+            res.end(JSON.stringify(userInfo));
             return;
         });
         return;
     }
 
-    //POST /unregister
-    if (requestUrl.pathname === "/unregister") {
+    //POST /leave
+    if (requestUrl.pathname === "/leave") {
         if (req.method !== "POST") {
             res.writeHead(405);
             res.end("HTTP 405 Method Not Allowed");
