@@ -9,25 +9,28 @@ window.onload = function start() {
 
 Babble = {
     MessageList: [],
-    register: function (userInfo) {
-        Babble.ServerService("post", "/register", userInfo, function (event) {
-            SaveUserID(event.id);
+    registerToServer: function (userInfo) {
+        Babble.ServerService("post", "/register", userInfo, function (userInfo) {
+            Babble.register(userInfo);
             Babble.getStats(updateStates);
             counterMsg = document.getElementById("counterMsg").innerHTML;
             Babble.getMessages(0, Babble.updateMessageList);
         }, null);
     },
+	register: function (userInfo) {
+		SaveUserInfo(userInfo);
+    },
     getMessages: function (counter, callback) {
-        Babble.ServerService("GET","/messages?counter="+counter,null,callback,null);
+        Babble.ServerService("GET","/messages?counter="+counter,null,callback,function(){Babble.getMessage(counter,callback)});
     },
     getStats: function (callback) {
-        Babble.ServerService("GET", "/stats", null, callback, null);
+        Babble.ServerService("GET", "/stats", null, callback, function(){Babble.getStats(callback)});
     },
     getStatslongPolling: function (callback) {
         Babble.ServerService("GET", "/stats?longpolling=true", null, callback,null);
     },
     deleteMessage: function (id, callback) {
-        Babble.ServerService("DELETE","/messages/:"+id,null,callback,null);
+        Babble.ServerService("DELETE","/messages/"+id,null,callback,null);
     },
     leave: function () {
         Babble.ServerService("post", "/leave", null, null,null);
@@ -36,11 +39,7 @@ Babble = {
         if(message!="")
         {
             var user = LoadLocalStorage();
-            var messageInfo = {
-                name:user.userInfo.name, email:user.userInfo.email, message: message,
-                timestamp:getTime(),id:user.userInfo.id
-            };
-            Babble.ServerService("post","/messages",messageInfo,callback,null);
+            Babble.ServerService("post","/messages",message,callback,null);
         }
     },
     updateMessageList: function (response) {
@@ -126,17 +125,25 @@ Babble = {
     },
     sendMsg:function(sendForm)
     {
-        button =
         sendForm.addEventListener('submit', function(e){
             e.preventDefault();
             var msg = document.getElementById("textAreaChat").value;
             document.getElementById("textAreaChat").value="";
             setUserCurrentMsg(msg);
-            Babble.postMessage(msg,Babble.addMsgToList);
+			
+			var user = LoadLocalStorage();
+			var messageInfo = {
+                name:user.userInfo.name, 
+				email:user.userInfo.email, 
+				id:user.userInfo.id,
+				message: msg,
+                timestamp:getTime()
+            };
+            Babble.postMessage(messageInfo,Babble.addMsgToList);
         });
     },
     checkUserRegister:function() {
-        if (localStorage.getItem("babble") === null) {
+        if (localStorage.getItem("babble") === null || localStorage.getItem("babble") === "null") {
 
             var user = {
                 currentMessage: "",
@@ -154,21 +161,21 @@ Babble = {
                 user.userInfo.email = document.getElementById('Email').value;
                 closeModel();
                 SaveLocalStorage(user);
-                Babble.register(user.userInfo);
+                Babble.registerToServer(user.userInfo);
 
             });
 
             document.querySelector('.btnAnonymous').addEventListener("click", function () {
-                user.userInfo.name = "anonymous";
+                user.userInfo.name = "";
                 user.userInfo.email = "";
                 closeModel();
                 SaveLocalStorage(user);
-                Babble.register(user.userInfo);
+                Babble.registerToServer(user.userInfo);
             });
         }
         else {
             closeModel();
-            Babble.register(LoadLocalStorage().userInfo);
+            Babble.registerToServer(LoadLocalStorage().userInfo);
         }
     }
 }
@@ -218,9 +225,9 @@ function updateStates(Stats){
     }
     Babble.getStatslongPolling(updateStates);
 }
-function SaveUserID(ID){
+function SaveUserInfo(userInfo){
    var user = JSON.parse(localStorage.getItem("babble"));
-   user.userInfo.id = ID;
+   user.userInfo = userInfo;
    localStorage.setItem('babble',JSON.stringify(user));
 }
 function getTime()
@@ -262,7 +269,7 @@ function renderMessage(msg) {
     var span =  document.createElement("span");
     span.setAttribute("class","infoHeader");
     var cite = document.createElement("cite");
-    cite.textContent = msg.name;//user name
+    cite.textContent = msg.name == "" ? "Anonymous" : msg.name;//user name
     span.appendChild(cite);
     var time = document.createElement("time");
     time.textContent = changeTime(msg.timestamp);
@@ -271,7 +278,7 @@ function renderMessage(msg) {
     div.setAttribute("tabindex", "0");
     listItem.appendChild(div);
     div.appendChild(span);
-    if(msg.userId == user.userInfo.id && user.userInfo.name != "anonymous")
+    if(msg.userId == user.userInfo.id && user.userInfo.name != "")
     {
         var button = document.createElement("button");
         button.setAttribute("tabindex", "0");

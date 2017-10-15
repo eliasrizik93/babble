@@ -4,24 +4,59 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>HTML MOCHA Test Report</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.css">		
+	</head>
+	<body>
+		<div id="mocha"></div>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2/chai.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/4.0.0/sinon.js"></script>
 		<script>mocha.setup('bdd')</script>
 		<script src="../../client/scripts/main.js"></script>
 		<script type="text/javascript" src="test.js"></script>
-		<script>
-			onload = function(){
-				mocha.checkLeaks();
-				var runner = mocha.run();
-				runner.on('test end', function(test){
-					console.log(test.fullTitle());
-				});
-			};
-		</script>
-	</head>
-	<body>
-		<div id="mocha"></div>
+		<script> mocha.checkLeaks(); mocha.run();</script>
+		
+		<div>
+			<div class="modal">
+				<div class="modal-content">
+					<h1>Who are you?</h1>
+					<form class="NameEmail" action="#">
+						<p class="Name">
+							<label for="Name" class="NameLabel">Full name:</label>
+							<input id="Name" class="inputName">
+						</p>
+						<p class="Email">
+							<label for="Email" class="NameLabel">Email:</label>
+							<input  id="Email" class="inputEmail">
+						</p>
+						<div class="buttonSign">
+							<button class="btnSave" value="save">Save</button>
+							<button class="btnAnonymous" value="anonymous">Stay Anonymous</button>
+						</div>
+					</form>
+				</div>
+				<div class="grey-Background"></div>
+			</div>
+			<div>
+				<dl>
+                    <dd>
+                        <span id="counterMsg" class="counterMsg">0</span>
+                    </dd>
+                    <dd>
+                        <span id="counterUser" class="counterUser">0</span>
+                    </dd>
+                </dl>
+			</div>
+			<div>
+			    <form class="SendForm" action="#">
+                    <span class="textChat">
+                     <textarea id="textAreaChat" class="textAreaChat" placeholder="Send Message..."></textarea>
+                    </span>
+                    <span class="Simg">
+                        <button aria-label="Send" type="submit" id = "sendImage" class="sendImg"></button>
+                    </span>
+                </form>
+			</div>
+		</div>
   </body>
 </html>
