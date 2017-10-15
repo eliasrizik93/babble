@@ -21,13 +21,13 @@ Babble = {
 		SaveUserInfo(userInfo);
     },
     getMessages: function (counter, callback) {
-        Babble.ServerService("GET","/messages?counter="+counter,null,callback,function(){Babble.getMessage(counter,callback)});
+        Babble.ServerService("GET","/messages?counter="+counter,null,callback,function(){Babble.getMessages(counter,callback)});
     },
     getStats: function (callback) {
-        Babble.ServerService("GET", "/stats", null, callback, function(){Babble.getStats(callback)});
+        Babble.ServerService("GET", "/stats", null, callback, null);
     },
     getStatslongPolling: function (callback) {
-        Babble.ServerService("GET", "/stats?longpolling=true", null, callback,null);
+        Babble.ServerService("GET", "/stats?longpolling=true", null, callback,function(){Babble.getStatslongPolling(callback)});
     },
     deleteMessage: function (id, callback) {
         Babble.ServerService("DELETE","/messages/"+id,null,callback,null);
@@ -197,8 +197,8 @@ function setUserCurrentMsg(msg)
    localStorage.setItem('babble',JSON.stringify(user));
 }
 function getUserId(){
-    var userId = LoadLocalStorage('babble').userInfo.id;
-    return userId;
+    var user = LoadLocalStorage('babble');
+    return (user && user.userInfo && user.userInfo.id) ? user.userInfo.id : null;
 }
 function SaveLocalStorage(User){
     localStorage.setItem('babble',JSON.stringify(User));
@@ -227,6 +227,9 @@ function updateStates(Stats){
 }
 function SaveUserInfo(userInfo){
    var user = JSON.parse(localStorage.getItem("babble"));
+   if (user == null) {
+	   user = {currentMessage: ""};
+   }
    user.userInfo = userInfo;
    localStorage.setItem('babble',JSON.stringify(user));
 }
@@ -278,7 +281,7 @@ function renderMessage(msg) {
     div.setAttribute("tabindex", "0");
     listItem.appendChild(div);
     div.appendChild(span);
-    if(msg.userId == user.userInfo.id && user.userInfo.name != "")
+    if(msg.userId == user.userInfo.id)
     {
         var button = document.createElement("button");
         button.setAttribute("tabindex", "0");
