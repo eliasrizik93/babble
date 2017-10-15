@@ -114,7 +114,7 @@ var server = http.createServer(function (req, res) {
             return;
         }
 
-        var messageId = requestUrl.pathname.substring(11);
+        var messageId = requestUrl.pathname.substring(10);
         if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(messageId) !== true) {
             res.writeHead(404);
             res.end("HTTP 404 Not found");
